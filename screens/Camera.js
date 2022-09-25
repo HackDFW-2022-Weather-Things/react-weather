@@ -3,12 +3,14 @@ import { useRef, useState } from "react";
 import { Text, TouchableOpacity} from "react-native";
 import { Icon } from 'react-native-elements'
 import { Box, IconButton } from "@react-native-material/core";
-import { tfjsML } from "./TestPick";
+import * as ImageManipulator from 'expo-image-manipulator'
+import * as FileSystem from 'expo-file-system'
+const utf8 = require("utf8")
 
 const Statistics = () => {
     return (
-      <>
-      </>
+      <Box height="40%" width="100%" style={{backgroundColor: "#2EAF7D"}}>
+      </Box>
     )
   }
 
@@ -19,11 +21,11 @@ export const CameraWrapper = ({ navigation }) => {
 
     if (lastPhotoURI !== null) {
         return (
-        <Box width="100%" height="100%" display="flex" flexDirection="row" pt={60} pl={20}>
+        <Box width="100%" height="50%" display="flex" flexDirection="row" style={{backgroundColor: "#2EAF7D"}} pt={60} pl={20}>
             <IconButton onPress={() => {
             setLastPhotoURI(null)
-            }} icon={() => (<Icon size="36" name="close"></Icon>)}></IconButton>
-            <Text style={{ fontSize: 24, marginTop: 10, marginLeft: 10 }} >Weather Report</Text>
+            }} icon={() => (<Icon size="36" color={"white"} name="close"></Icon>)}></IconButton>
+            <Text style={{color: "white", fontSize: 24, marginTop: 10, marginLeft: 10 }} >Weather Report</Text>
             <Statistics />
         </Box>
         );
@@ -47,13 +49,12 @@ export const CameraWrapper = ({ navigation }) => {
                 borderRadius: 100,
                 backgroundColor: '#2EAF7D',
                 position: 'absolute',
-                bottom: '10%',
-                left: '46%'}}
+                bottom: '10%'}}
             color = "white"
             onPress={ () => {
                 Detect({ ref: cameraRef, setLastPhotoURI: setLastPhotoURI })
             }}>
-                <Icon size="50" name='camera' type='ionicon' color='white'/>
+                <Icon style={{marginLeft: 5, marginTop: 2}} size="40" name='camera' type='ionicon' color='white'/>
             </TouchableOpacity>
         </Box>
         </Camera>
@@ -63,11 +64,11 @@ export const CameraWrapper = ({ navigation }) => {
     const Detect = async ({ ref, setLastPhotoURI }) => {
     if (ref.current) {
         let photo = await ref.current.takePictureAsync({ skipProcessing: true });
-        const resizedPhoto = await manipulateAsync(
+        const resizedPhoto = await ImageManipulator.manipulateAsync(
           photo.uri,
-          [{ resize: { width: 225, height: 400 } }],
+          [{ resize: { width: 128, height: 128 } }],
         );
-  
+        setLastPhotoURI(photo.uri)
         const imgB64 = await FileSystem.readAsStringAsync(resizedPhoto.uri, {
           encoding: FileSystem.EncodingType.Base64,
         });
@@ -80,7 +81,7 @@ export const CameraWrapper = ({ navigation }) => {
           };
 
         try {
-        let resp = await fetch('http://3.81.59.65/prediction', requestOptions)
+        let resp = await fetch('http://10.20.9.94:5000/prediction', requestOptions)
         let resp2 = await resp.json()
         console.log(resp2)
         } catch (err) {

@@ -10,6 +10,14 @@ import React from "react";
 let heat = [
   { latitude: 32.78855847373976, longitude: -96.78917645908992, weight: 10},
   { latitude: 32.7885585, longitude: -96.7891764, weight: 10},
+  { latitude: 32.79104408627386, longitude: -96.79236399978161, weight: 10},
+  { latitude: 32.79104409, longitude: -96.7923639998, weight: 10},
+  { latitude: 32.797111552427815, longitude: -96.79321372307366, weight: 10},
+  { latitude: 32.79711155, longitude: -96.79321372, weight: 10},
+  { latitude: 32.7929949357948, longitude: -96.79633181403945, weight: 10},
+  { latitude: 32.7929950, longitude: -96.7963318, weight: 10},
+  { latitude: 32.79449506902755, longitude: -96.79074840504205, weight: 10},
+  { latitude: 32.7944951, longitude: -96.7907484, weight: 10},
   { latitude: 32.787765194355416, longitude: -96.79480323889685, weight: 10 },
   { latitude: 32.7877651, longitude: -96.7948032, weight: 10 },
 ];
@@ -36,7 +44,7 @@ export const Home = ({ navigation }) => {
         region={mapRegion}
         showsUserLocation={true}>
 
-        <Heatmap points={heat} radius={70} opacity={10}/>
+        <Heatmap points={heat} radius={60} opacity={15}/>
 
         
       </MapView>
