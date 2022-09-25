@@ -12,6 +12,7 @@ export const TFJSView = ({ result }) => {
   const [model, setModel] = useState();
   const [resourceIO, setResourceIO] = useState();
   const [imageData, setImageData] = useState();
+  const [prediction, setPrediction] = useState();
 
   useEffect(() => {
     async function prepare() {
@@ -69,12 +70,14 @@ export const TFJSView = ({ result }) => {
       const input = imageData;
       console.log(input.shape);
       let initialTime = Date.now();
-      const output = model.predict(input).print();
+      const output = model.predict(input);
       let predictions = Array.from(output.dataSync()); 
       let finalTime = Date.now();
       let timeTaken = finalTime - initialTime;
       console.log("TAKEN: " + timeTaken);
       console.log(predictions)
+      const decision = predictions[0] > predictions[1] ? "Fair" : "Severe"
+      setPrediction(decision)
   }
     catch (err) {
       console.log(err);
@@ -90,6 +93,9 @@ export const TFJSView = ({ result }) => {
       {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
       <Text>
         TFJS: {state ? "Ready" : "Waiting"} - Model: {modelState ? "Ready" : "Waiting"}
+      </Text>
+      <Text>
+        Result: {prediction}
       </Text>
       <Button title='Predict' onPress={predict} />
     </View>

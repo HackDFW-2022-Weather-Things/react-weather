@@ -13,17 +13,21 @@ export const CameraWrapper = ({ navigation }) => {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef(null);
   const [lastPhotoURI, setLastPhotoURI] = useState(null);
+  const [result, setResult] = useState(0)
 
   if (lastPhotoURI !== null) {
-      return (
-      <Box width="100%" height="100%" display="flex" flexDirection="row" pt={60} pl={20} zIndex={-1}>
+    return (
+      <>
+        <Box width="100%" height="100%" display="flex" flexDirection="row" style={{ backgroundColor: "#2EAF7D" }} pt={60} pl={20}>
           <IconButton onPress={() => {
-          setLastPhotoURI(null)
-          }} icon={() => (<Icon size="36" name="close"></Icon>)}></IconButton>
-          <Text style={{ fontSize: 24, marginTop: 10, marginLeft: 10 }} >Weather Report</Text>
+            setLastPhotoURI(null)
+          }} icon={() => (<Icon size="36" color={"white"} name="close"></Icon>)}></IconButton>
+          <Text style={{ color: "white", fontSize: 24, marginTop: 10, marginLeft: 10 }} >Weather Report</Text>
+          <Text>{result < 0.2 ? "SEVERE" : "FAIR"}</Text>
           <TFJSView result={lastPhotoURI} />
-      </Box>
-      );
+        </Box>
+      </>
+    );
   }
 
   return (
@@ -61,6 +65,33 @@ export const CameraWrapper = ({ navigation }) => {
   const Detect = async ({ ref, setLastPhotoURI }) => {
   if (ref.current) {
       let photo = await ref.current.takePictureAsync({ skipProcessing: true });
+      if ((await Network.getNetworkStateAsync()).isConnected) {
+        //waiting for you 
+        const resizedPhoto = await ImageManipulator.manipulateAsync(
+          photo.uri,
+          [{ resize: { width: 128, height: 128 } }],
+        );
+        setLastPhotoURI(photo.uri)
+        const imgB64 = await FileSystem.readAsStringAsync(resizedPhoto.uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        const imgBuffer = utf8.encode(imgB64);
+    
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ photo: imgBuffer, x: 0, y: 0 })
+        };
+    
+        try {
+          let resp = await fetch('http://10.20.9.94:5000/prediction', requestOptions)
+          let resp2 = await resp.json()
+          console.log(resp2)
+          setResult(resp2[0])
+        } catch (err) {
+          console.log(err)
+        }
+      }
       setLastPhotoURI(photo.uri);
   }
 }
