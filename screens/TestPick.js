@@ -102,8 +102,7 @@ export const TFJSView = ({ result, setResult }) => {
         justifyContent: "center",
         alignItems: "center",
       }}
-    > {
-    }
+    > 
       <View style={{ width: "100%", height: "100%", alignItems: "center" }}>
         {image && (
           <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
