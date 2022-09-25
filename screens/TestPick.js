@@ -118,8 +118,8 @@ export const TFJSView = ({ result, setResult }) => {
             borderColor:'black',
             alignItems:'center',
             justifyContent:'center',
-            width:100,
-            height:150,
+            width:200,
+            height:100,
             backgroundColor:'#fff',
             borderRadius:50,
           }} onPress={predict}>
